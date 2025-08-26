@@ -12,6 +12,7 @@ import {
   Alert,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Toast from 'react-native-toast-message';
 
 const Colors = {
   primary: '#6366f1',
@@ -83,19 +84,56 @@ const LoginScreen = ({ navigation }: any) => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Please fill in all fields',
+      });
       return;
     }
-
+  
     setIsLoading(true);
-    
-    // Simulate login process
-    setTimeout(() => {
+  
+    try {
+      const response = await fetch('http://10.0.2.2:3002/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Login successful!',
+        });
+  
+        // Navigate after short delay
+        setTimeout(() => {
+          navigation.navigate('Home');
+        }, 1500);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Login Failed',
+          text2: data.message || 'Invalid credentials',
+        });
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Network Error',
+        text2: 'Please try again later',
+      });
+    } finally {
       setIsLoading(false);
-      Alert.alert('Success', 'Login successful!');
-      // navigation.navigate('Home'); // Uncomment when you have a home screen
-    }, 2000);
+    }
   };
+  
 
   const handleSocialLogin = (provider: string) => {
     Alert.alert('Social Login', `Login with ${provider} clicked`);

@@ -9,9 +9,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert,
+  Alert
+  
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Toast from 'react-native-toast-message';
 import { Colors, Spacing, BorderRadius, FontSizes, Shadows } from '../styles/theme';
 
 const SignupScreen = ({ navigation }: any) => {
@@ -25,28 +27,72 @@ const SignupScreen = ({ navigation }: any) => {
 
   const handleSignup = async () => {
     if (!name || !email || !password || !confirmPassword) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Please fill in all fields',
+      });
       return;
     }
-
+  
     if (password !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match');
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Passwords do not match',
+      });
       return;
     }
-
+  
     if (password.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters long');
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Password must be at least 6 characters long',
+      });
       return;
     }
-
+  
     setIsLoading(true);
-    
-    // Simulate signup process
-    setTimeout(() => {
+  
+    try {
+      const response = await fetch('http://10.0.2.2:3002/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Account created successfully!',
+        });
+  
+        // Navigate after small delay
+        setTimeout(() => {
+          navigation.navigate('Login');
+        }, 1500);
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Signup Failed',
+          text2: data.message || 'Something went wrong',
+        });
+      }
+    } catch (error) {
+      console.error('Signup error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Network Error',
+        text2: 'Please try again later',
+      });
+    } finally {
       setIsLoading(false);
-      Alert.alert('Success', 'Account created successfully!');
-      // navigation.navigate('Login'); // Uncomment when you want to navigate to login
-    }, 2000);
+    }
   };
 
   const handleSocialSignup = (provider: string) => {

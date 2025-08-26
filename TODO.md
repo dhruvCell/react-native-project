@@ -1,25 +1,42 @@
-# Login Page UI Implementation - TODO List
+# MongoDB Authentication Integration Plan
 
-## Phase 1: Setup and Dependencies
-- [x] Install React Navigation dependencies
-- [x] Create folder structure
-- [x] Create theme/styles file
+## Steps to Connect Login and Signup Pages to MongoDB
 
-## Phase 2: Navigation Setup
-- [x] Create AppNavigator component
-- [x] Update App.tsx to use navigation
+### [x] 1. Set Up Server Dependencies
+- Install Express, Mongoose, and other necessary packages for the server
+- Create package.json for the server
 
-## Phase 3: Login Screen Implementation
-- [x] Create LoginScreen component with attractive UI
-- [x] Add form fields and validation
-- [x] Implement social login buttons
-- [x] Add loading states and animations
+### [x] 2. Create MongoDB Connection
+- Create `server/db.js` to handle MongoDB connection using Mongoose
 
-## Phase 4: Testing and Polish
-- [ ] Test on both iOS and Android
-- [ ] Add any missing assets/icons
-- [ ] Final polish and cleanup
+### [x] 3. Create User Model
+- Create `server/models/User.js` with User schema (name, email, password, etc.)
 
-## Completed Tasks:
-- [x] Project analysis and planning
-- [x] TypeScript types for react-native-vector-icons installed
+### [x] 4. Create Authentication Routes
+- Create `server/routes/auth.js` with:
+  - POST /api/auth/signup - User registration
+  - POST /api/auth/login - User login
+
+### [x] 5. Update Frontend API Calls
+- Modify `src/screens/LoginScreen.tsx` to call login API
+- Modify `src/screens/SignupScreen.tsx` to call signup API
+- Add error handling and loading states
+
+### [x] 6. Test Authentication Flow
+- [x] Test signup functionality - SUCCESS (Status 201, user created)
+- [x] Test login functionality - SUCCESS (Status 200, login successful)
+- [x] Verify data is stored in MongoDB - SUCCESS (User data returned with IDs)
+
+### [x] 7. Implement Home Screen Navigation
+- [x] Create HomeScreen component
+- [x] Add HomeScreen to AppNavigator
+- [x] Update LoginScreen to navigate to Home after successful login
+
+### [ ] 8. Security Enhancements (Optional)
+- Add password hashing
+- Add JWT tokens for authentication
+- Input validation
+
+## Current Progress:
+- Plan created and approved
+- Ready to start implementation
