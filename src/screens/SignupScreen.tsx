@@ -9,14 +9,15 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert
-  
+  Alert,
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
 import { Colors, Spacing, BorderRadius, FontSizes, Shadows } from '../styles/theme';
+import { useAuth } from '../contexts/AuthContext';
 
 const SignupScreen = ({ navigation }: any) => {
+  const { login } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -71,6 +72,8 @@ const SignupScreen = ({ navigation }: any) => {
           type: 'success',
           text1: 'Account created successfully!',
         });
+
+        login(); // Call the login function to update the auth state
   
         // Navigate after small delay
         setTimeout(() => {

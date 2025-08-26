@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { useAuth } from '../contexts/AuthContext';
 import {
   View,
   Text,
@@ -77,6 +78,7 @@ const Shadows = {
 };
 
 const LoginScreen = ({ navigation }: any) => {
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -110,6 +112,8 @@ const LoginScreen = ({ navigation }: any) => {
           type: 'success',
           text1: 'Login successful!',
         });
+  
+        login(); // Update authentication state
   
         // Navigate after short delay
         setTimeout(() => {

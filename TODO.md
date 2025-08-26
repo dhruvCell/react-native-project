@@ -32,7 +32,14 @@
 - [x] Add HomeScreen to AppNavigator
 - [x] Update LoginScreen to navigate to Home after successful login
 
-### [ ] 8. Security Enhancements (Optional)
+### [x] 8. Implement Top Bar with Authentication State
+- [x] Create AuthContext for authentication state management
+- [x] Create TopBar component with Login/Signup/Logout buttons
+- [x] Update App.tsx to use AuthProvider and set initial route to Home
+- [x] Update LoginScreen to update auth state on successful login
+- [x] Implement logout functionality
+
+### [ ] 9. Security Enhancements (Optional)
 - Add password hashing
 - Add JWT tokens for authentication
 - Input validation
