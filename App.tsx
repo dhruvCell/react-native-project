@@ -23,8 +23,6 @@ export default function App() {
           <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Navigator>
       </NavigationContainer>
-
-      {/* 👇 Add Toast at the root */}
       <Toast />
     </SafeAreaProvider>
   );
