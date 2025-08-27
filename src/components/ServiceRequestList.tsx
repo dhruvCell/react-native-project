@@ -166,52 +166,49 @@ const ServiceRequestList = () => {
       </View>
 
       <View style={styles.detailsContainer}>
-        <View style={styles.detailRow}>
-          <View style={styles.detailColumn}>
-            <View style={styles.detailItem}>
-              <Icon name="person" size={16} color={colors.textSecondary} />
-              <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Customer:</Text>
-              <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
-                {item.customerName}
-              </Text>
-            </View>
-            
-            <View style={styles.detailItem}>
-              <Icon name="business" size={16} color={colors.textSecondary} />
-              <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Company:</Text>
-              <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
-                {item.companyName}
-              </Text>
-            </View>
-          </View>
-          
-          <View style={styles.detailColumn}>
-            <View style={styles.detailItem}>
-              <Icon name="engineering" size={16} color={colors.textSecondary} />
-              <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Assigned To:</Text>
-              <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
-                {item.assignedTo}
-              </Text>
-            </View>
-          </View>
-        </View>
-        
+        {/* First Row: Customer and Company */}
         <View style={styles.detailRow}>
           <View style={styles.detailItem}>
-            <Icon name="access-time" size={16} color={colors.textSecondary} />
-            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Scheduled:</Text>
-            <Text style={[styles.detailValue, { color: colors.text }]}>
-              {new Date(item.scheduledDateTime).toLocaleString()}
+            <Icon name="person" size={16} color={colors.textSecondary} />
+            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Customer:</Text>
+            <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
+              {item.customerName}
+            </Text>
+          </View>
+          <View style={styles.detailItem}>
+            <Icon name="business" size={16} color={colors.textSecondary} />
+            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Company:</Text>
+            <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
+              {item.companyName}
             </Text>
           </View>
         </View>
         
+        {/* Second Row: Assigned To and Created */}
         <View style={styles.detailRow}>
+          <View style={styles.detailItem}>
+            <Icon name="engineering" size={16} color={colors.textSecondary} />
+            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Assigned To:</Text>
+            <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
+              {item.assignedTo}
+            </Text>
+          </View>
           <View style={styles.detailItem}>
             <Icon name="event" size={16} color={colors.textSecondary} />
             <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Created:</Text>
             <Text style={[styles.detailValue, { color: colors.text }]}>
               {new Date(item.createdAt).toLocaleDateString()}
+            </Text>
+          </View>
+        </View>
+        
+        {/* Third Row: Schedule */}
+        <View style={styles.detailRow}>
+          <View style={[styles.detailItem, styles.fullWidthItemLarge]}>
+            <Icon name="access-time" size={16} color={colors.textSecondary} />
+            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Scheduled:</Text>
+            <Text style={[styles.detailValue, { color: colors.text }]}>
+              {new Date(item.scheduledDateTime).toLocaleString()}
             </Text>
           </View>
         </View>
@@ -327,6 +324,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 8,
   },
+  fullWidthItemLarge: {
+    minWidth: '100%',
+  },
   itemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -381,6 +381,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 6,
+    flex: 1,
+    maxWidth: '50%', // Ensure it doesn't overflow
   },
   detailLabel: {
     fontSize: 12,

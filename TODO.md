@@ -1,15 +1,16 @@
-# TODO: Add Search Bar to ServiceRequestList
+# ServiceRequestList Layout Reorganization
 
 ## Steps to Complete:
-1. [x] Add searchQuery state to track search input
-2. [x] Add TextInput component for search bar with styling
-3. [x] Implement filtering logic for service requests
-4. [x] Update FlatList to use filtered data
-5. [x] Add clear search functionality
-6. [ ] Test search functionality
+- [x] Modify renderItem function in ServiceRequestList.tsx
+- [x] Reorganize layout to have:
+  - Row 1: Customer and Company
+  - Row 2: Assigned To and Created
+  - Row 3: Schedule
+- [x] Remove service name from main content area
+- [x] Maintain consistent styling
+- [ ] Test the layout changes
 
-## Current Progress:
-- Search bar has been implemented with filtering across multiple fields
-- The search works on: serviceName, customerName, companyName, assignedTo, phone, email, and status
-- Styling has been added to match the existing design
-- FlatList now shows filtered results with count
+## Current Status:
+- Layout structure has been reorganized successfully
+- Styling has been adjusted for proper alignment
+- Ready for testing
