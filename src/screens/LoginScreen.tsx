@@ -1,6 +1,4 @@
-import React, { useState, useContext } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { useTheme } from '../contexts/ThemeContext';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -15,68 +13,9 @@ import {
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
-
-const Colors = {
-  primary: '#6366f1',
-  secondary: '#818cf8',
-  background: '#f8fafc',
-  surface: '#ffffff',
-  text: '#1e293b',
-  textSecondary: '#64748b',
-  border: '#e2e8f0',
-  divider: '#e2e8f0',
-  error: '#ef4444',
-  success: '#22c55e',
-};
-
-const Spacing = {
-  xs: 4,
-  sm: 8,
-  md: 16,
-  lg: 24,
-  xl: 32,
-  xxl: 40,
-};
-
-const BorderRadius = {
-  sm: 4,
-  md: 8,
-  lg: 16,
-  xl: 24,
-  round: 100,
-};
-
-const FontSizes = {
-  sm: 14,
-  md: 16,
-  lg: 18,
-  xl: 20,
-  xxl: 24,
-  xxxl: 32,
-};
-
-const Shadows = {
-  sm: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 1,
-  },
-  md: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-};
+import { Spacing, BorderRadius, FontSizes, Shadows } from '../styles/theme';
+import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const LoginScreen = ({ navigation }: any) => {
   const { login } = useAuth();
@@ -163,10 +102,10 @@ const LoginScreen = ({ navigation }: any) => {
         {/* Form Section */}
         <View style={[styles.formContainer, { backgroundColor: colors.surface }]}>
           {/* Email Input */}
-          <View style={styles.inputContainer}>
-            <FontAwesome name="envelope" size={20} color={Colors.textSecondary} style={styles.inputIcon} />
+          <View style={[styles.inputContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <FontAwesome name="envelope" size={20} color={colors.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text }]}
               placeholder="Email address"
               placeholderTextColor={colors.textSecondary}
               value={email}
@@ -177,12 +116,12 @@ const LoginScreen = ({ navigation }: any) => {
           </View>
 
           {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <FontAwesome name="lock" size={20} color={Colors.textSecondary} style={styles.inputIcon} />
+          <View style={[styles.inputContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <FontAwesome name="lock" size={20} color={colors.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text }]}
               placeholder="Password"
-              placeholderTextColor={Colors.textSecondary}
+              placeholderTextColor={colors.textSecondary}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -194,61 +133,61 @@ const LoginScreen = ({ navigation }: any) => {
               <FontAwesome
                 name={showPassword ? 'eye-slash' : 'eye'}
                 size={20}
-                color={Colors.textSecondary}
+                color={colors.textSecondary}
               />
             </TouchableOpacity>
           </View>
 
           {/* Forgot Password */}
           <TouchableOpacity style={styles.forgotPassword}>
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            <Text style={[styles.forgotPasswordText, { color: colors.primary }]}>Forgot Password?</Text>
           </TouchableOpacity>
 
           {/* Login Button */}
           <TouchableOpacity
-            style={[styles.loginButton, isLoading && styles.loginButtonDisabled]}
+            style={[styles.loginButton, { backgroundColor: colors.primary }, isLoading && { opacity: 0.6 }]}
             onPress={handleLogin}
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color={Colors.surface} />
+              <ActivityIndicator color={colors.surface} />
             ) : (
-              <Text style={styles.loginButtonText}>Sign In</Text>
+              <Text style={[styles.loginButtonText, { color: colors.surface }]}>Sign In</Text>
             )}
           </TouchableOpacity>
 
           {/* Divider */}
           <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or continue with</Text>
-            <View style={styles.dividerLine} />
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+            <Text style={[styles.dividerText, { color: colors.textSecondary }]}>or continue with</Text>
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
           </View>
 
           {/* Social Login Buttons */}
           <View style={styles.socialButtonsContainer}>
             <TouchableOpacity
-              style={[styles.socialButton, styles.googleButton]}
+              style={[styles.socialButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
               onPress={() => handleSocialLogin('Google')}
             >
               <FontAwesome name="google" size={20} color="#DB4437" />
-              <Text style={styles.socialButtonText}>Google</Text>
+              <Text style={[styles.socialButtonText, { color: colors.text }]}>Google</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.socialButton, styles.facebookButton]}
+              style={[styles.socialButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
               onPress={() => handleSocialLogin('Facebook')}
             >
               <FontAwesome name="facebook" size={20} color="#4267B2" />
-              <Text style={styles.socialButtonText}>Facebook</Text>
+              <Text style={[styles.socialButtonText, { color: colors.text }]}>Facebook</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Sign Up Section */}
         <View style={styles.signUpContainer}>
-          <Text style={styles.signUpText}>Don't have an account? </Text>
+          <Text style={[styles.signUpText, { color: colors.textSecondary }]}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-            <Text style={styles.signUpLink}>Sign Up</Text>
+            <Text style={[styles.signUpLink, { color: colors.primary }]}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -259,7 +198,6 @@ const LoginScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -274,7 +212,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: BorderRadius.round,
-    backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.lg,
@@ -283,15 +220,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.xxxl,
     fontWeight: 'bold',
-    color: Colors.text,
     marginBottom: Spacing.xs,
   },
   subtitle: {
     fontSize: FontSizes.md,
-    color: Colors.textSecondary,
   },
   formContainer: {
-    backgroundColor: Colors.surface,
     borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
     ...Shadows.sm,
@@ -299,12 +233,10 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.background,
     borderRadius: BorderRadius.md,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.border,
   },
   inputIcon: {
     marginRight: Spacing.sm,
@@ -313,7 +245,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     fontSize: FontSizes.md,
-    color: Colors.text,
   },
   eyeIcon: {
     padding: Spacing.sm,
@@ -323,22 +254,16 @@ const styles = StyleSheet.create({
     marginBottom: Spacing.lg,
   },
   forgotPasswordText: {
-    color: Colors.primary,
     fontSize: FontSizes.sm,
   },
   loginButton: {
-    backgroundColor: Colors.primary,
     borderRadius: BorderRadius.md,
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.lg,
   },
-  loginButtonDisabled: {
-    backgroundColor: Colors.textSecondary,
-  },
   loginButtonText: {
-    color: Colors.surface,
     fontSize: FontSizes.lg,
     fontWeight: '600',
   },
@@ -350,11 +275,9 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: Colors.divider,
   },
   dividerText: {
     marginHorizontal: Spacing.sm,
-    color: Colors.textSecondary,
     fontSize: FontSizes.sm,
   },
   socialButtonsContainer: {
@@ -370,17 +293,10 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
-    borderColor: Colors.border,
     gap: Spacing.sm,
   },
-  googleButton: {
-    backgroundColor: Colors.surface,
-  },
-  facebookButton: {
-    backgroundColor: Colors.surface,
-  },
   socialButtonText: {
-    fontSize: FontSizes.sm,
+    fontSize: FontSizes.md,
     fontWeight: '500',
   },
   signUpContainer: {
@@ -389,11 +305,9 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
   },
   signUpText: {
-    color: Colors.textSecondary,
     fontSize: FontSizes.sm,
   },
   signUpLink: {
-    color: Colors.primary,
     fontSize: FontSizes.sm,
     fontWeight: '600',
   },
