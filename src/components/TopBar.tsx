@@ -8,12 +8,13 @@ type RootStackParamList = {
   Home: undefined;
   Login: undefined;
   Signup: undefined;
+  Profile: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 const TopBar = () => {
-  const { isLoggedIn, logout } = useAuth();
+  const { isLoggedIn, user, logout } = useAuth();
   const navigation = useNavigation<NavigationProp>();
 
   const handleLogin = () => {
@@ -26,7 +27,19 @@ const TopBar = () => {
 
   const handleLogout = () => {
     logout();
-    navigation.navigate('Login'); // Navigate to Login screen after logout
+    navigation.navigate('Login');
+  };
+
+  const getUserInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase())
+      .join('')
+      .slice(0, 2);
+  };
+
+  const navigateToProfile = () => {
+    navigation.navigate('Profile');
   };
 
   return (
@@ -36,10 +49,17 @@ const TopBar = () => {
       </View>
       
       <View style={styles.rightSection}>
-        {isLoggedIn ? (
-          <TouchableOpacity onPress={handleLogout} style={styles.button}>
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
+        {isLoggedIn && user ? (
+          <View style={styles.userSection}>
+            <TouchableOpacity 
+              onPress={navigateToProfile} 
+              style={styles.userInitialsCircle}
+            >
+              <Text style={styles.userInitialsText}>
+                {getUserInitials(user.name)}
+              </Text>
+            </TouchableOpacity>
+          </View>
         ) : (
           <>
             <TouchableOpacity onPress={handleLogin} style={styles.button}>
@@ -78,6 +98,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#6366f1',
+  },
+  userSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  userInitialsCircle: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#6366f1',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  userInitialsText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
   },
   button: {
     paddingHorizontal: 12,

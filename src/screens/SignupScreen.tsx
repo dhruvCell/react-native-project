@@ -73,7 +73,7 @@ const SignupScreen = ({ navigation }: any) => {
           text1: 'Account created successfully!',
         });
 
-        login(); // Call the login function to update the auth state
+        // After signup, navigate to login screen - user will login there
   
         // Navigate after small delay
         setTimeout(() => {
