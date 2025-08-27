@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -15,6 +16,7 @@ type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 const TopBar = () => {
   const { isLoggedIn, user, logout } = useAuth();
+  const { colors } = useTheme();
   const navigation = useNavigation<NavigationProp>();
 
   const handleLogin = () => {
@@ -43,9 +45,9 @@ const TopBar = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.leftSection}>
-        <Text style={styles.logo}>MyApp</Text>
+        <Text style={[styles.logo, { color: colors.primary }]}>MyApp</Text>
       </View>
       
       <View style={styles.rightSection}>
@@ -53,20 +55,20 @@ const TopBar = () => {
           <View style={styles.userSection}>
             <TouchableOpacity 
               onPress={navigateToProfile} 
-              style={styles.userInitialsCircle}
+              style={[styles.userInitialsCircle, { backgroundColor: colors.primary }]}
             >
-              <Text style={styles.userInitialsText}>
+              <Text style={[styles.userInitialsText, { color: colors.surface }]}>
                 {getUserInitials(user.name)}
               </Text>
             </TouchableOpacity>
           </View>
         ) : (
           <>
-            <TouchableOpacity onPress={handleLogin} style={styles.button}>
-              <Text style={styles.buttonText}>Login</Text>
+            <TouchableOpacity onPress={handleLogin} style={[styles.button, { backgroundColor: colors.primary }]}>
+              <Text style={[styles.buttonText, { color: colors.surface }]}>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleSignup} style={[styles.button, styles.signupButton]}>
-              <Text style={[styles.buttonText, styles.signupButtonText]}>Signup</Text>
+            <TouchableOpacity onPress={handleSignup} style={[styles.button, styles.signupButton, { backgroundColor: colors.surface, borderColor: colors.primary }]}>
+              <Text style={[styles.buttonText, styles.signupButtonText, { color: colors.primary }]}>Signup</Text>
             </TouchableOpacity>
           </>
         )}
@@ -81,7 +83,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    paddingVertical: 50,
+    paddingTop: 50,
+    paddingBottom: 10,
     backgroundColor: '#f8fafc',
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',

@@ -13,11 +13,13 @@ import {
 } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Toast from 'react-native-toast-message';
-import { Colors, Spacing, BorderRadius, FontSizes, Shadows } from '../styles/theme';
+import { Spacing, BorderRadius, FontSizes, Shadows } from '../styles/theme';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 const SignupScreen = ({ navigation }: any) => {
   const { login } = useAuth();
+  const { colors } = useTheme();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,9 +27,8 @@ const SignupScreen = ({ navigation }: any) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
   const handleSignup = async () => {
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || password || !confirmPassword) {
       Toast.show({
         type: 'error',
         text1: 'Validation Error',
@@ -104,28 +105,28 @@ const SignupScreen = ({ navigation }: any) => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header Section */}
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <FontAwesome name="user-plus" size={60} color={Colors.primary} />
+          <View style={[styles.logoContainer, { backgroundColor: colors.surface }]}>
+            <FontAwesome name="user-plus" size={60} color={colors.primary} />
           </View>
-          <Text style={styles.title}>Create Account</Text>
-          <Text style={styles.subtitle}>Sign up to get started</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Create Account</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Sign up to get started</Text>
         </View>
 
         {/* Form Section */}
-        <View style={styles.formContainer}>
+        <View style={[styles.formContainer, { backgroundColor: colors.surface }]}>
           {/* Name Input */}
-          <View style={styles.inputContainer}>
-            <FontAwesome name="user" size={20} color={Colors.textSecondary} style={styles.inputIcon} />
+          <View style={[styles.inputContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <FontAwesome name="user" size={20} color={colors.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text }]}
               placeholder="Full Name"
-              placeholderTextColor={Colors.textSecondary}
+              placeholderTextColor={colors.textSecondary}
               value={name}
               onChangeText={setName}
               autoCapitalize="words"
@@ -133,12 +134,12 @@ const SignupScreen = ({ navigation }: any) => {
           </View>
 
           {/* Email Input */}
-          <View style={styles.inputContainer}>
-            <FontAwesome name="envelope" size={20} color={Colors.textSecondary} style={styles.inputIcon} />
+          <View style={[styles.inputContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <FontAwesome name="envelope" size={20} color={colors.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text }]}
               placeholder="Email address"
-              placeholderTextColor={Colors.textSecondary}
+              placeholderTextColor={colors.textSecondary}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
@@ -147,12 +148,12 @@ const SignupScreen = ({ navigation }: any) => {
           </View>
 
           {/* Password Input */}
-          <View style={styles.inputContainer}>
-            <FontAwesome name="lock" size={20} color={Colors.textSecondary} style={styles.inputIcon} />
+          <View style={[styles.inputContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <FontAwesome name="lock" size={20} color={colors.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text }]}
               placeholder="Password"
-              placeholderTextColor={Colors.textSecondary}
+              placeholderTextColor={colors.textSecondary}
               value={password}
               onChangeText={setPassword}
               secureTextEntry={!showPassword}
@@ -164,18 +165,18 @@ const SignupScreen = ({ navigation }: any) => {
               <FontAwesome
                 name={showPassword ? 'eye-slash' : 'eye'}
                 size={20}
-                color={Colors.textSecondary}
+                color={colors.textSecondary}
               />
             </TouchableOpacity>
           </View>
 
           {/* Confirm Password Input */}
-          <View style={styles.inputContainer}>
-            <FontAwesome name="lock" size={20} color={Colors.textSecondary} style={styles.inputIcon} />
+            <View style={[styles.inputContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <FontAwesome name="lock" size={20} color={colors.textSecondary} style={styles.inputIcon} />
             <TextInput
-              style={styles.input}
+              style={[styles.input, { color: colors.text }]}
               placeholder="Confirm Password"
-              placeholderTextColor={Colors.textSecondary}
+              placeholderTextColor={colors.textSecondary}
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               secureTextEntry={!showConfirmPassword}
@@ -187,63 +188,63 @@ const SignupScreen = ({ navigation }: any) => {
               <FontAwesome
                 name={showConfirmPassword ? 'eye-slash' : 'eye'}
                 size={20}
-                color={Colors.textSecondary}
+                color={colors.textSecondary}
               />
             </TouchableOpacity>
           </View>
 
           {/* Sign Up Button */}
           <TouchableOpacity
-            style={[styles.signupButton, isLoading && styles.signupButtonDisabled]}
+            style={[styles.signupButton, { backgroundColor: colors.primary }, isLoading && { opacity: 0.6 }]}
             onPress={handleSignup}
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color={Colors.surface} />
+              <ActivityIndicator color={colors.surface} />
             ) : (
-              <Text style={styles.signupButtonText}>Create Account</Text>
+              <Text style={[styles.signupButtonText, { color: colors.surface }]}>Create Account</Text>
             )}
           </TouchableOpacity>
 
           {/* Terms and Conditions */}
-          <Text style={styles.termsText}>
+          <Text style={[styles.termsText, { color: colors.textSecondary }]}>
             By signing up, you agree to our{' '}
-            <Text style={styles.termsLink}>Terms of Service</Text> and{' '}
-            <Text style={styles.termsLink}>Privacy Policy</Text>
+            <Text style={[styles.termsLink, { color: colors.primary }]}>Terms of Service</Text> and{' '}
+            <Text style={[styles.termsLink, { color: colors.primary }]}>Privacy Policy</Text>.
           </Text>
 
           {/* Divider */}
           <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>or sign up with</Text>
-            <View style={styles.dividerLine} />
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
+            <Text style={[styles.dividerText, { color: colors.textSecondary }]}>or sign up with</Text>
+            <View style={[styles.dividerLine, { backgroundColor: colors.divider }]} />
           </View>
 
           {/* Social Signup Buttons */}
           <View style={styles.socialButtonsContainer}>
             <TouchableOpacity
-              style={[styles.socialButton, styles.googleButton]}
+              style={[styles.socialButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
               onPress={() => handleSocialSignup('Google')}
             >
               <FontAwesome name="google" size={20} color="#DB4437" />
-              <Text style={styles.socialButtonText}>Google</Text>
+              <Text style={[styles.socialButtonText, { color: colors.text }]}>Google</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.socialButton, styles.facebookButton]}
+              style={[styles.socialButton, { backgroundColor: colors.surface, borderColor: colors.border }]}
               onPress={() => handleSocialSignup('Facebook')}
             >
               <FontAwesome name="facebook" size={20} color="#4267B2" />
-              <Text style={styles.socialButtonText}>Facebook</Text>
+              <Text style={[styles.socialButtonText, { color: colors.text }]}>Facebook</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Sign In Section */}
         <View style={styles.signInContainer}>
-          <Text style={styles.signInText}>Already have an account? </Text>
+          <Text style={[styles.signInText, { color: colors.textSecondary }]}>Already have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.signInLink}>Sign In</Text>
+            <Text style={[styles.signInLink, { color: colors.primary }]}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -254,7 +255,6 @@ const SignupScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   scrollContainer: {
     flexGrow: 1,
@@ -269,7 +269,6 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: BorderRadius.round,
-    backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.lg,
@@ -278,15 +277,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: FontSizes.xxxl,
     fontWeight: 'bold',
-    color: Colors.text,
     marginBottom: Spacing.xs,
   },
   subtitle: {
     fontSize: FontSizes.md,
-    color: Colors.textSecondary,
   },
   formContainer: {
-    backgroundColor: Colors.surface,
     borderRadius: BorderRadius.lg,
     padding: Spacing.lg,
     ...Shadows.sm,
@@ -294,12 +290,10 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.background,
     borderRadius: BorderRadius.md,
     paddingHorizontal: Spacing.md,
     marginBottom: Spacing.md,
     borderWidth: 1,
-    borderColor: Colors.border,
   },
   inputIcon: {
     marginRight: Spacing.sm,
@@ -308,35 +302,27 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     fontSize: FontSizes.md,
-    color: Colors.text,
   },
   eyeIcon: {
     padding: Spacing.sm,
   },
   signupButton: {
-    backgroundColor: Colors.primary,
     borderRadius: BorderRadius.md,
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: Spacing.md,
   },
-  signupButtonDisabled: {
-    backgroundColor: Colors.textSecondary,
-  },
   signupButtonText: {
-    color: Colors.surface,
     fontSize: FontSizes.lg,
     fontWeight: '600',
   },
   termsText: {
     textAlign: 'center',
-    color: Colors.textSecondary,
     fontSize: FontSizes.sm,
     marginBottom: Spacing.lg,
   },
   termsLink: {
-    color: Colors.primary,
     fontWeight: '500',
   },
   divider: {
@@ -347,11 +333,9 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: Colors.divider,
   },
   dividerText: {
     marginHorizontal: Spacing.sm,
-    color: Colors.textSecondary,
     fontSize: FontSizes.sm,
   },
   socialButtonsContainer: {
@@ -367,18 +351,7 @@ const styles = StyleSheet.create({
     padding: Spacing.md,
     borderRadius: BorderRadius.md,
     borderWidth: 1,
-    borderColor: Colors.border,
     gap: Spacing.sm,
-  },
-  googleButton: {
-    backgroundColor: Colors.surface,
-  },
-  facebookButton: {
-    backgroundColor: Colors.surface,
-  },
-  socialButtonText: {
-    fontSize: FontSizes.sm,
-    fontWeight: '500',
   },
   signInContainer: {
     flexDirection: 'row',
@@ -386,13 +359,15 @@ const styles = StyleSheet.create({
     marginTop: Spacing.xl,
   },
   signInText: {
-    color: Colors.textSecondary,
     fontSize: FontSizes.sm,
   },
   signInLink: {
-    color: Colors.primary,
     fontSize: FontSizes.sm,
     fontWeight: '600',
+  },
+  socialButtonText: {
+    fontSize: FontSizes.md,
+    fontWeight: '500',
   },
 });
 

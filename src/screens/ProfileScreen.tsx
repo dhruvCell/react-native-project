@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { useLanguage } from '../contexts/LanguageContext';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import TopBar from '../components/TopBar';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { Colors, Spacing, BorderRadius, FontSizes, Shadows, Gradients } from '../styles/theme';
+import { lightColors, Spacing, BorderRadius, FontSizes, Shadows, Gradients } from '../styles/theme';
 
 type RootStackParamList = {
   Home: undefined;
@@ -20,6 +22,10 @@ const ProfileScreen = () => {
   const { user, logout } = useAuth();
   const navigation = useNavigation<NavigationProp>();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  
+  // Theme and Language Contexts
+  const { theme, colors, toggleTheme } = useTheme();
+  const { language, setLanguage } = useLanguage();
 
   const handleLogout = () => {
     logout();
@@ -47,6 +53,8 @@ const ProfileScreen = () => {
     { label: 'Achievements', value: '5', icon: 'star' },
   ];
 
+  const styles = getStyles(colors);
+
   return (
     <View style={styles.container}>
       <TopBar />
@@ -73,7 +81,7 @@ const ProfileScreen = () => {
           <View style={styles.statsContainer}>
             {stats.map((stat, index) => (
               <View key={index} style={styles.statItem}>
-                <Icon name={stat.icon} size={20} color={Colors.primary} />
+                <Icon name={stat.icon} size={20} color={colors.primary} />
                 <Text style={styles.statValue}>{stat.value}</Text>
                 <Text style={styles.statLabel}>{stat.label}</Text>
               </View>
@@ -92,7 +100,7 @@ const ProfileScreen = () => {
                 onPress={action.action}
               >
                 <View style={styles.actionIcon}>
-                  <Icon name={action.icon} size={24} color={Colors.primary} />
+                <Icon name={action.icon} size={24} color={colors.primary} />
                 </View>
                 <Text style={styles.actionLabel}>{action.label}</Text>
               </TouchableOpacity>
@@ -105,21 +113,25 @@ const ProfileScreen = () => {
           <Text style={styles.sectionTitle}>Account</Text>
           <View style={styles.accountCard}>
             <View style={styles.accountItem}>
-              <Icon name="security" size={20} color={Colors.textSecondary} />
+              <Icon name="security" size={20} color={colors.textSecondary} />
               <Text style={styles.accountText}>Privacy & Security</Text>
-              <Icon name="chevron-right" size={20} color={Colors.textSecondary} />
+              <Icon name="chevron-right" size={20} color={colors.textSecondary} />
             </View>
             <View style={styles.divider} />
             <View style={styles.accountItem}>
-              <Icon name="language" size={20} color={Colors.textSecondary} />
+              <Icon name="language" size={20} color={colors.textSecondary} />
               <Text style={styles.accountText}>Language</Text>
-              <Text style={styles.accountValue}>English</Text>
+              <TouchableOpacity onPress={() => setLanguage(language === 'en' ? 'es' : 'en')}>
+                <Text style={styles.accountValue}>{language === 'en' ? 'English' : 'Español'}</Text>
+              </TouchableOpacity>
             </View>
             <View style={styles.divider} />
             <View style={styles.accountItem}>
-              <Icon name="dark-mode" size={20} color={Colors.textSecondary} />
+              <Icon name="dark-mode" size={20} color={colors.textSecondary} />
               <Text style={styles.accountText}>Dark Mode</Text>
-              <Icon name="toggle-off" size={24} color={Colors.textSecondary} />
+              <TouchableOpacity onPress={toggleTheme}>
+                <Icon name={theme === 'light' ? 'toggle-off' : 'toggle-on'} size={24} color={colors.textSecondary} />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -150,7 +162,7 @@ const ProfileScreen = () => {
               style={styles.logoutButton}
               onPress={() => setShowLogoutConfirm(true)}
             >
-              <Icon name="logout" size={20} color={Colors.error} />
+              <Icon name="logout" size={20} color={colors.error} />
               <Text style={styles.logoutButtonText}>Logout</Text>
             </TouchableOpacity>
           )}
@@ -162,10 +174,11 @@ const ProfileScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+// Move styles inside the component to access the colors variable
+const getStyles = (colors: typeof lightColors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
+    backgroundColor: colors.background,
   },
   scrollView: {
     flex: 1,
@@ -176,7 +189,7 @@ const styles = StyleSheet.create({
   },
   cover: {
     height: 140,
-    backgroundColor: Colors.primary,
+    backgroundColor: colors.primary,
     borderBottomLeftRadius: BorderRadius.lg,
     borderBottomRightRadius: BorderRadius.lg,
   },
@@ -191,17 +204,17 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: BorderRadius.round,
-    backgroundColor: Colors.surface,
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 4,
-    borderColor: Colors.surface,
+    borderColor: colors.surface,
     ...Shadows.lg,
   },
   avatarText: {
     fontSize: FontSizes.xxxl,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: colors.primary,
   },
   userInfo: {
     alignItems: 'center',
@@ -211,17 +224,17 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: FontSizes.xxl,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: colors.text,
     marginBottom: Spacing.xs,
   },
   userEmail: {
     fontSize: FontSizes.md,
-    color: Colors.textSecondary,
+    color: colors.textSecondary,
     marginBottom: Spacing.sm,
   },
   userBio: {
     fontSize: FontSizes.sm,
-    color: Colors.textSecondary,
+    color: colors.textSecondary,
     textAlign: 'center',
     marginBottom: Spacing.lg,
   },
@@ -237,12 +250,12 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: FontSizes.xl,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: colors.text,
     marginVertical: Spacing.xs,
   },
   statLabel: {
     fontSize: FontSizes.sm,
-    color: Colors.textSecondary,
+    color: colors.textSecondary,
   },
   section: {
     paddingHorizontal: Spacing.lg,
@@ -251,7 +264,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: FontSizes.lg,
     fontWeight: '600',
-    color: Colors.text,
+    color: colors.text,
     marginBottom: Spacing.md,
   },
   actionsGrid: {
@@ -262,7 +275,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     width: '48%',
-    backgroundColor: Colors.surface,
+    backgroundColor: colors.surface,
     padding: Spacing.md,
     borderRadius: BorderRadius.md,
     alignItems: 'center',
@@ -273,11 +286,11 @@ const styles = StyleSheet.create({
   },
   actionLabel: {
     fontSize: FontSizes.sm,
-    color: Colors.text,
+    color: colors.text,
     fontWeight: '500',
   },
   accountCard: {
-    backgroundColor: Colors.surface,
+    backgroundColor: colors.surface,
     borderRadius: BorderRadius.md,
     padding: Spacing.md,
     ...Shadows.sm,
@@ -290,23 +303,23 @@ const styles = StyleSheet.create({
   accountText: {
     flex: 1,
     fontSize: FontSizes.md,
-    color: Colors.text,
+    color: colors.text,
     marginLeft: Spacing.md,
   },
   accountValue: {
     fontSize: FontSizes.sm,
-    color: Colors.textSecondary,
+    color: colors.textSecondary,
   },
   divider: {
     height: 1,
-    backgroundColor: Colors.divider,
+    backgroundColor: colors.divider,
     marginVertical: Spacing.xs,
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.surface,
+    backgroundColor: colors.surface,
     padding: Spacing.md,
     borderRadius: BorderRadius.md,
     ...Shadows.sm,
@@ -314,11 +327,11 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     fontSize: FontSizes.md,
-    color: Colors.error,
+    color: colors.error,
     fontWeight: '500',
   },
   confirmCard: {
-    backgroundColor: Colors.surface,
+    backgroundColor: colors.surface,
     padding: Spacing.lg,
     borderRadius: BorderRadius.md,
     ...Shadows.md,
@@ -326,12 +339,12 @@ const styles = StyleSheet.create({
   confirmTitle: {
     fontSize: FontSizes.lg,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: colors.text,
     marginBottom: Spacing.sm,
   },
   confirmMessage: {
     fontSize: FontSizes.md,
-    color: Colors.textSecondary,
+    color: colors.textSecondary,
     marginBottom: Spacing.lg,
   },
   confirmButtons: {
@@ -345,17 +358,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButton: {
-    backgroundColor: Colors.divider,
+    backgroundColor: colors.divider,
   },
   logoutConfirmButton: {
-    backgroundColor: Colors.error,
+    backgroundColor: colors.error,
   },
   cancelButtonText: {
-    color: Colors.text,
+    color: colors.text,
     fontWeight: '500',
   },
   logoutConfirmText: {
-    color: Colors.surface,
+    color: colors.surface,
     fontWeight: '500',
   },
   footerSpacer: {

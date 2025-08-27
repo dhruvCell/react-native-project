@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { useTheme } from '../contexts/ThemeContext';
 import {
   View,
   Text,
@@ -79,6 +80,7 @@ const Shadows = {
 
 const LoginScreen = ({ navigation }: any) => {
   const { login } = useAuth();
+  const { colors } = useTheme();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -145,28 +147,28 @@ const LoginScreen = ({ navigation }: any) => {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Header Section */}
         <View style={styles.header}>
-          <View style={styles.logoContainer}>
-            <FontAwesome name="user-circle" size={60} color={Colors.primary} />
+          <View style={[styles.logoContainer, { backgroundColor: colors.surface }]}>
+            <FontAwesome name="user-circle" size={60} color={colors.primary} />
           </View>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to your account</Text>
+          <Text style={[styles.title, { color: colors.text }]}>Welcome Back</Text>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Sign in to your account</Text>
         </View>
 
         {/* Form Section */}
-        <View style={styles.formContainer}>
+        <View style={[styles.formContainer, { backgroundColor: colors.surface }]}>
           {/* Email Input */}
           <View style={styles.inputContainer}>
             <FontAwesome name="envelope" size={20} color={Colors.textSecondary} style={styles.inputIcon} />
             <TextInput
               style={styles.input}
               placeholder="Email address"
-              placeholderTextColor={Colors.textSecondary}
+              placeholderTextColor={colors.textSecondary}
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"

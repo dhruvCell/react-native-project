@@ -1,4 +1,4 @@
-export const Colors = {
+export const lightColors = {
   primary: '#6366F1',
   primaryDark: '#4F46E5',
   secondary: '#10B981',
@@ -13,6 +13,24 @@ export const Colors = {
   border: '#E5E7EB',
   divider: '#F3F4F6',
 };
+
+export const darkColors = {
+  primary: '#818CF8',
+  primaryDark: '#6366F1',
+  secondary: '#34D399',
+  accent: '#FBBF24',
+  background: '#111827',
+  surface: '#1F2937',
+  text: '#F9FAFB',
+  textSecondary: '#9CA3AF',
+  error: '#F87171',
+  success: '#34D399',
+  warning: '#FBBF24',
+  border: '#374151',
+  divider: '#4B5563',
+};
+
+export const Colors = lightColors; // Default to light theme
 
 export const Gradients = {
   primary: ['#6366F1', '#4F46E5'],
