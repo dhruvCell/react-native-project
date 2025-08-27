@@ -7,12 +7,15 @@ import {
   TouchableOpacity, 
   Alert, 
   ActivityIndicator,
-  RefreshControl 
+  RefreshControl,
+  Dimensions 
 } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useTheme } from '../contexts/ThemeContext';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+
+const { width } = Dimensions.get('window');
 
 interface ServiceRequest {
   _id: string;
@@ -123,12 +126,10 @@ const ServiceRequestList = () => {
   const renderItem = ({ item }: { item: ServiceRequest }) => (
     <TouchableOpacity 
       style={[
-        styles.item, 
+        styles.fullWidthItem, 
         { 
           backgroundColor: colors.surface,
           borderColor: colors.border,
-          shadowColor: colors.text,
-          elevation: 2,
         }
       ]} 
       onPress={() => handleServiceRequestPress(item)}
@@ -151,39 +152,56 @@ const ServiceRequestList = () => {
         </View>
       </View>
 
-      <View style={styles.customerInfo}>
-        <Icon name="person" size={16} color={colors.textSecondary} />
-        <Text style={[styles.customer, { color: colors.text }]} numberOfLines={1}>
-          {item.customerName}
-        </Text>
-      </View>
-
-      <View style={styles.companyInfo}>
-        <Icon name="business" size={16} color={colors.textSecondary} />
-        <Text style={[styles.company, { color: colors.textSecondary }]} numberOfLines={1}>
-          {item.companyName}
-        </Text>
-      </View>
-
-      <View style={styles.datetimeInfo}>
-        <Icon name="access-time" size={16} color={colors.textSecondary} />
-        <Text style={[styles.datetime, { color: colors.textSecondary }]}>
-          {new Date(item.scheduledDateTime).toLocaleString()}
-        </Text>
-      </View>
-
-      <View style={styles.assignedInfo}>
-        <Icon name="engineering" size={16} color={colors.textSecondary} />
-        <Text style={[styles.assignedTo, { color: colors.textSecondary }]} numberOfLines={1}>
-          Assigned to: {item.assignedTo}
-        </Text>
-      </View>
-
-      <View style={styles.footer}>
-        <Text style={[styles.createdAt, { color: colors.textSecondary }]}>
-          Created: {new Date(item.createdAt).toLocaleDateString()}
-        </Text>
-        <Icon name="chevron-right" size={20} color={colors.textSecondary} />
+      <View style={styles.detailsContainer}>
+        <View style={styles.detailRow}>
+          <View style={styles.detailColumn}>
+            <View style={styles.detailItem}>
+              <Icon name="person" size={16} color={colors.textSecondary} />
+              <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Customer:</Text>
+              <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
+                {item.customerName}
+              </Text>
+            </View>
+            
+            <View style={styles.detailItem}>
+              <Icon name="business" size={16} color={colors.textSecondary} />
+              <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Company:</Text>
+              <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
+                {item.companyName}
+              </Text>
+            </View>
+          </View>
+          
+          <View style={styles.detailColumn}>
+            <View style={styles.detailItem}>
+              <Icon name="engineering" size={16} color={colors.textSecondary} />
+              <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Assigned To:</Text>
+              <Text style={[styles.detailValue, { color: colors.text }]} numberOfLines={1}>
+                {item.assignedTo}
+              </Text>
+            </View>
+          </View>
+        </View>
+        
+        <View style={styles.detailRow}>
+          <View style={styles.detailItem}>
+            <Icon name="access-time" size={16} color={colors.textSecondary} />
+            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Scheduled:</Text>
+            <Text style={[styles.detailValue, { color: colors.text }]}>
+              {new Date(item.scheduledDateTime).toLocaleString()}
+            </Text>
+          </View>
+        </View>
+        
+        <View style={styles.detailRow}>
+          <View style={styles.detailItem}>
+            <Icon name="event" size={16} color={colors.textSecondary} />
+            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Created:</Text>
+            <Text style={[styles.detailValue, { color: colors.text }]}>
+              {new Date(item.createdAt).toLocaleDateString()}
+            </Text>
+          </View>
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -257,26 +275,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   listContent: {
-    padding: 16,
-    paddingTop: 0,
+    paddingHorizontal: 16,
   },
-  item: {
+  fullWidthItem: {
+    width: '100%',
     padding: 16,
     marginBottom: 12,
-    borderRadius: 12,
     borderWidth: 1,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    borderRadius: 8,
   },
   itemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 12,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
   },
   serviceInfo: {
     flexDirection: 'row',
@@ -307,53 +322,36 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
-  customerInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+  detailsContainer: {
+    width: '100%',
   },
-  customer: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginLeft: 8,
-  },
-  companyInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  company: {
-    fontSize: 14,
-    marginLeft: 8,
-  },
-  datetimeInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  datetime: {
-    fontSize: 14,
-    marginLeft: 8,
-  },
-  assignedInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  assignedTo: {
-    fontSize: 14,
-    marginLeft: 8,
-  },
-  footer: {
+  detailRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.1)',
+    marginBottom: 8,
   },
-  createdAt: {
+  detailColumn: {
+    flex: 1,
+  },
+  detailItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  detailLabel: {
     fontSize: 12,
+    marginLeft: 6,
+    marginRight: 4,
+    fontWeight: '500',
+  },
+  detailValue: {
+    fontSize: 13,
+    fontWeight: '400',
+    flex: 1,
+  },
+  chevron: {
+    marginLeft: 8,
   },
   loadingText: {
     marginTop: 16,
