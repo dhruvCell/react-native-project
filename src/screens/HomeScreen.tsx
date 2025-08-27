@@ -11,7 +11,6 @@ const HomeScreen = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar />
       <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.text }]}>Service Requests</Text>
         <ServiceRequestList />
       </View>
     </View>
