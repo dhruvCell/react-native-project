@@ -10,6 +10,7 @@ type RootStackParamList = {
   Login: undefined;
   Signup: undefined;
   Profile: undefined;
+  CreateServiceRequest: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
@@ -44,6 +45,10 @@ const TopBar = () => {
     navigation.navigate('Profile');
   };
 
+  const navigateToCreateServiceRequest = () => {
+    navigation.navigate('CreateServiceRequest');
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.leftSection}>
@@ -53,6 +58,12 @@ const TopBar = () => {
       <View style={styles.rightSection}>
         {isLoggedIn && user ? (
           <View style={styles.userSection}>
+            <TouchableOpacity 
+              onPress={navigateToCreateServiceRequest} 
+              style={[styles.button, { backgroundColor: colors.primary, marginRight: 8 }]}
+            >
+              <Text style={[styles.buttonText, { color: colors.surface }]}>New Service</Text>
+            </TouchableOpacity>
             <TouchableOpacity 
               onPress={navigateToProfile} 
               style={[styles.userInitialsCircle, { backgroundColor: colors.primary }]}

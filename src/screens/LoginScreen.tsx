@@ -53,9 +53,9 @@ const LoginScreen = ({ navigation }: any) => {
           type: 'success',
           text1: 'Login successful!',
         });
-  
-        login({ name: data.user.name, email: data.user.email }); // Update authentication state
-  
+
+        login({ name: data.user.name, email: data.user.email }, data.token); // Update authentication state with token
+
         // Navigate after short delay
         setTimeout(() => {
           navigation.navigate('Home');

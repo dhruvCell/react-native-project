@@ -28,7 +28,7 @@ interface FormData {
 
 const CreateServiceRequestScreen: React.FC<CreateServiceRequestScreenProps> = ({ navigation }) => {
   const { colors } = useTheme();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   
   const [formData, setFormData] = useState<FormData>({
     serviceName: '',
@@ -40,6 +40,7 @@ const CreateServiceRequestScreen: React.FC<CreateServiceRequestScreenProps> = ({
     assignedTo: '',
     status: 'Pending'
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (field: keyof FormData, value: string) => {
     setFormData(prev => ({
@@ -49,13 +50,43 @@ const CreateServiceRequestScreen: React.FC<CreateServiceRequestScreenProps> = ({
   };
 
   const handleSubmit = async () => {
+    if (!token) {
+      Alert.alert('Error', 'Please login to create service requests');
+      return;
+    }
+
+    // Validate required fields
+    if (!formData.serviceName || !formData.customerName || !formData.phone || !formData.email || !formData.companyName || !formData.scheduledDateTime || !formData.assignedTo) {
+      Alert.alert('Error', 'Please fill in all required fields');
+      return;
+    }
+
+    setIsLoading(true);
+
     try {
-      // For now, we'll just show a success message since we don't have the token
-      Alert.alert('Success', 'Service request would be created successfully (API integration pending)');
-      navigation.goBack();
+      const response = await fetch('http://10.0.2.2:3002/api/service-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Service request created successfully!');
+        // Navigate to Home screen instead of going back
+        navigation.navigate('Home');
+      } else {
+        Alert.alert('Error', data.message || 'Failed to create service request');
+      }
     } catch (error) {
-      Alert.alert('Error', 'Failed to create service request');
       console.error('Error creating service request:', error);
+      Alert.alert('Error', 'Failed to create service request. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,11 +156,15 @@ const CreateServiceRequestScreen: React.FC<CreateServiceRequestScreenProps> = ({
       <TouchableOpacity
         style={[
           styles.submitButton,
-          { backgroundColor: colors.primary }
+          { backgroundColor: colors.primary },
+          isLoading && { opacity: 0.6 }
         ]}
         onPress={handleSubmit}
+        disabled={isLoading}
       >
-        <Text style={styles.submitButtonText}>Create Service Request</Text>
+        <Text style={styles.submitButtonText}>
+          {isLoading ? 'Creating...' : 'Create Service Request'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );

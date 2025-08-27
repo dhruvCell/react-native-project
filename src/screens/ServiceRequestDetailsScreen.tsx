@@ -7,14 +7,16 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 // import SignatureCapture from 'react-native-signature-capture';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 
 interface ServiceRequest {
-  id: number;
+  _id: string;
   serviceName: string;
   customerName: string;
   phone: string;
@@ -23,6 +25,10 @@ interface ServiceRequest {
   scheduledDateTime: string;
   assignedTo: string;
   status: string;
+  comments?: string;
+  signature?: string;
+  audioFeedback?: string;
+  videoFeedback?: string;
 }
 
 type RootStackParamList = {
@@ -33,13 +39,14 @@ const audioRecorderPlayer = new AudioRecorderPlayer();
 
 const ServiceRequestDetailsScreen: React.FC = () => {
   const { colors } = useTheme();
-  const navigation = useNavigation();
+  const { token } = useAuth();
+  const navigation = useNavigation<any>();
   const route = useRoute<RouteProp<RootStackParamList, 'ServiceRequestDetails'>>();
   
   let serviceRequest: ServiceRequest;
   try {
     serviceRequest = route.params?.serviceRequest || {
-      id: 0,
+      _id: '',
       serviceName: 'Sample Service',
       customerName: 'Sample Customer',
       phone: '000-0000',
@@ -55,13 +62,13 @@ const ServiceRequestDetailsScreen: React.FC = () => {
     return null;
   }
 
-  const [comments, setComments] = useState('');
+  const [comments, setComments] = useState(serviceRequest.comments || '');
   const [status, setStatus] = useState(serviceRequest.status);
-  const [signature, setSignature] = useState('');
+  const [signature, setSignature] = useState(serviceRequest.signature || '');
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
-  const [audioPath, setAudioPath] = useState('');
+  const [audioPath, setAudioPath] = useState(serviceRequest.audioFeedback || '');
   const [isRecordingVideo, setIsRecordingVideo] = useState(false);
-  const [videoPath, setVideoPath] = useState('');
+  const [videoPath, setVideoPath] = useState(serviceRequest.videoFeedback || '');
   // const signatureRef = useRef<SignatureCapture>(null);
 
   const statusOptions = [
@@ -105,7 +112,7 @@ const ServiceRequestDetailsScreen: React.FC = () => {
     Alert.alert('Video Recording', isRecordingVideo ? 'Video recording stopped' : 'Video recording started');
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const updateData = {
       comments,
       status,
@@ -113,9 +120,34 @@ const ServiceRequestDetailsScreen: React.FC = () => {
       audioFeedback: audioPath,
       videoFeedback: videoPath,
     };
-    
-    Alert.alert('Update Submitted', 'Service request has been updated successfully');
-    console.log('Update data:', updateData);
+
+    if (!serviceRequest._id) {
+      Alert.alert('Error', 'Service request ID is missing');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://10.0.2.2:3002/api/service-requests/${serviceRequest._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Assuming token is available
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Alert.alert('Success', 'Service request updated successfully!');
+        navigation.navigate('Home'); // Redirect to the list page
+      } else {
+        Alert.alert('Error', data.message || 'Failed to update service request');
+      }
+    } catch (error) {
+      console.error('Error updating service request:', error);
+      Alert.alert('Error', 'Failed to update service request. Please try again.');
+    }
   };
 
   return (

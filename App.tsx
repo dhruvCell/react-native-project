@@ -12,6 +12,7 @@ import SignupScreen from './src/screens/SignupScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import ProfileScreen from './src/screens/ProfileScreen';
 import ServiceRequestDetailsScreen from './src/screens/ServiceRequestDetailsScreen';
+import CreateServiceRequestScreen from './src/screens/CreateServiceRequestScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ export default function App() {
                 <Stack.Screen name="Signup" component={SignupScreen} />
                 <Stack.Screen name="Profile" component={ProfileScreen} />
                 <Stack.Screen name="ServiceRequestDetails" component={ServiceRequestDetailsScreen} />
+                <Stack.Screen name="CreateServiceRequest" component={CreateServiceRequestScreen} />
               </Stack.Navigator>
             </NavigationContainer>
             <Toast />

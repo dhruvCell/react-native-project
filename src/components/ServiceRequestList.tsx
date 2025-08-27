@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 interface ServiceRequest {
-  id: number;
+  _id: string;
   serviceName: string;
   customerName: string;
   phone: string;
@@ -13,10 +13,11 @@ interface ServiceRequest {
   scheduledDateTime: string;
   assignedTo: string;
   status: string;
+  createdAt: string;
 }
 
 const ServiceRequestList = () => {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigation = useNavigation();
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,57 +26,54 @@ const ServiceRequestList = () => {
     (navigation as any).navigate('ServiceRequestDetails', { serviceRequest });
   };
 
+  const fetchServiceRequests = async () => {
+    if (!user || !token) {
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch('http://10.0.2.2:3002/api/service-requests', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setServiceRequests(data);
+    } catch (error) {
+      console.error('Error fetching service requests:', error);
+      Alert.alert('Error', 'Failed to fetch service requests. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchServiceRequests = async () => {
-      if (!user) {
-        setLoading(false);
-        return;
-      }
-
-      try {
-        // Mock data for now - replace with actual API call
-        const mockData: ServiceRequest[] = [
-          {
-            id: 1,
-            serviceName: 'AC Repair',
-            customerName: 'John Doe',
-            phone: '555-1234',
-            email: 'john@example.com',
-            companyName: 'ABC Corp',
-            scheduledDateTime: '2024-01-15 10:00',
-            assignedTo: 'Tech Smith',
-            status: 'Pending'
-          },
-          {
-            id: 2,
-            serviceName: 'Plumbing Service',
-            customerName: 'Jane Smith',
-            phone: '555-5678',
-            email: 'jane@example.com',
-            companyName: 'XYZ Inc',
-            scheduledDateTime: '2024-01-16 14:30',
-            assignedTo: 'Plumber Joe',
-            status: 'In Progress'
-          }
-        ];
-        
-        setServiceRequests(mockData);
-      } catch (error) {
-        console.error('Error fetching service requests:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchServiceRequests();
-  }, [user]);
+  }, [user, token]);
+
+  // Refresh service requests when screen comes into focus
+  useFocusEffect(
+    useCallback(() => {
+      fetchServiceRequests();
+    }, [fetchServiceRequests])
+  );
 
   const renderItem = ({ item }: { item: ServiceRequest }) => (
     <TouchableOpacity style={styles.item} onPress={() => handleServiceRequestPress(item)}>
       <Text style={styles.title}>{item.serviceName}</Text>
       <Text style={styles.customer}>{item.customerName}</Text>
       <Text style={styles.company}>{item.companyName}</Text>
-      <Text style={styles.datetime}>Scheduled: {item.scheduledDateTime}</Text>
+      <Text style={styles.datetime}>
+        Scheduled: {new Date(item.scheduledDateTime).toLocaleString()}
+      </Text>
       <Text style={styles.status}>Status: {item.status}</Text>
     </TouchableOpacity>
   );
@@ -93,12 +91,14 @@ const ServiceRequestList = () => {
       <FlatList
         data={serviceRequests}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
         ListEmptyComponent={
           <View style={styles.empty}>
             <Text>No service requests found</Text>
           </View>
         }
+        refreshing={loading}
+        onRefresh={fetchServiceRequests}
       />
     </View>
   );

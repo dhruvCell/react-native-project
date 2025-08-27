@@ -8,7 +8,8 @@ interface User {
 interface AuthContextType {
   isLoggedIn: boolean;
   user: User | null;
-  login: (userData: User) => void;
+  token: string | null;
+  login: (userData: User, authToken: string) => void;
   logout: () => void;
 }
 
@@ -21,19 +22,22 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [token, setToken] = useState<string | null>(null);
 
-  const login = (userData: User) => {
+  const login = (userData: User, authToken: string) => {
     setIsLoggedIn(true);
     setUser(userData);
+    setToken(authToken);
   };
 
   const logout = () => {
     setIsLoggedIn(false);
     setUser(null);
+    setToken(null);
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, token, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

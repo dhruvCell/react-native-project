@@ -28,7 +28,7 @@ const SignupScreen = ({ navigation }: any) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const handleSignup = async () => {
-    if (!name || !email || password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       Toast.show({
         type: 'error',
         text1: 'Validation Error',
