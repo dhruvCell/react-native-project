@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { TextInput } from 'react-native';
 import { 
   View, 
   Text, 
@@ -37,6 +38,18 @@ const ServiceRequestList = () => {
   const [serviceRequests, setServiceRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter service requests based on search query
+  const filteredServiceRequests = serviceRequests.filter(request => 
+    request.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.customerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.assignedTo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.phone.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    request.status.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleServiceRequestPress = (serviceRequest: ServiceRequest) => {
     (navigation as any).navigate('ServiceRequestDetails', { serviceRequest });
@@ -226,10 +239,27 @@ const ServiceRequestList = () => {
         <Text style={[styles.headerSubtitle, { color: colors.textSecondary }]}>
           Manage your service requests
         </Text>
+
+        <View style={styles.searchContainer}>
+          <TextInput
+            placeholder="Search service requests..."
+            placeholderTextColor={colors.textSecondary}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            style={[
+              styles.searchInput, 
+              { 
+                backgroundColor: colors.surface,
+                color: colors.text,
+                borderColor: colors.border
+              }
+            ]}
+          />
+        </View>
       </View>
 
       <FlatList
-        data={serviceRequests}
+        data={filteredServiceRequests}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
         ListEmptyComponent={
@@ -265,6 +295,19 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     paddingBottom: 10,
+  },
+  searchContainer: {
+    position: 'relative',
+    marginBottom: 12,
+    marginTop: 12,
+  },
+  searchInput: {
+    height: 40,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    paddingRight: 40, // Space for clear button
   },
   headerTitle: {
     fontSize: 24,
