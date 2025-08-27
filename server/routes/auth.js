@@ -1,4 +1,5 @@
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
 
@@ -20,6 +21,13 @@ router.post('/signup', async (req, res) => {
     const user = new User({ name, email, password });
     await user.save();
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
     res.status(201).json({
       success: true,
       message: 'User created successfully',
@@ -27,7 +35,8 @@ router.post('/signup', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email
-      }
+      },
+      token
     });
   } catch (error) {
     console.error('Signup error:', error);
@@ -61,6 +70,13 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
     res.json({
       success: true,
       message: 'Login successful',
@@ -68,7 +84,8 @@ router.post('/login', async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email
-      }
+      },
+      token
     });
   } catch (error) {
     console.error('Login error:', error);

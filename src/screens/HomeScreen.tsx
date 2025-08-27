@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useTheme } from '../contexts/ThemeContext';
 import TopBar from '../components/TopBar';
+import ServiceRequestList from '../components/ServiceRequestList';
 
 const HomeScreen = () => {
   const { colors } = useTheme();
@@ -10,7 +11,8 @@ const HomeScreen = () => {
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar />
       <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.text }]}>Welcome to the Home Screen!</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Service Requests</Text>
+        <ServiceRequestList />
       </View>
     </View>
   );

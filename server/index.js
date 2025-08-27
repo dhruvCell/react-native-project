@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
+const serviceRequestRoutes = require('./routes/serviceRequests');
 
 const app = express();
 const PORT = process.env.PORT || 3002;
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/service-requests', serviceRequestRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
